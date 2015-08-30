@@ -6,13 +6,6 @@ import time
 
 Controller.initWorld()
 
-# def sendAndSetTimer(sock,thread):
-#   print 'timer for thread',threading.current_thread().name
-#   if Controller.isPlayer(thread):
-#     Controller.sendWorldSection(sock,thread)
-#     t = threading.Timer(0.05,sendAndSetTimer,[sock,thread])
-#     t.start()
-
 def handler(clientsock,addr):
   clientsock.sendall("320 320 7 7 \n")
   threadName = threading.current_thread().name

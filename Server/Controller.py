@@ -34,7 +34,6 @@ def initWorld():
 
 
 def handleInput(msg,sock,thread):
-  print "On thread ",thread," recieved msg ",msg
   command = msg.partition(' ')
   msgSwitch[command[0]]([command[2],sock,thread])
 

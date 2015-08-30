@@ -1,7 +1,35 @@
 import pygame
 import os
 
-player = {'x':0,'y':0,'wx':0,'wy':0,'surface':None}
+player = {'x':0,'y':0,'dx':0,'dy':0,'wx':0,'wy':0,'surfaces':{
+              'right':{
+                'stand':pygame.image.load(os.path.join('Assets','wizardRightStand.png')),
+                'walk1':pygame.image.load(os.path.join('Assets','wizardRightWalk1.png')),
+                'walk2':pygame.image.load(os.path.join('Assets','wizardRightWalk2.png')),
+                'atk1' :pygame.image.load(os.path.join('Assets','wizardRightAtk1.png')),
+                'atk2' :pygame.image.load(os.path.join('Assets','wizardRightAtk2.png'))
+              },'left':{
+                'stand':pygame.image.load(os.path.join('Assets','wizardLeftStand.png')),
+                'walk1':pygame.image.load(os.path.join('Assets','wizardLeftWalk1.png')),
+                'walk2':pygame.image.load(os.path.join('Assets','wizardLeftWalk2.png')),
+                'atk1' :pygame.image.load(os.path.join('Assets','wizardLeftAtk1.png')),
+                'atk2' :pygame.image.load(os.path.join('Assets','wizardLeftAtk2.png'))
+              },'up':{
+                'stand':pygame.image.load(os.path.join('Assets','wizardBackStand.png')),
+                'walk1':pygame.image.load(os.path.join('Assets','wizardBackWalk1.png')),
+                'walk2':pygame.image.load(os.path.join('Assets','wizardBackWalk2.png')),
+                'atk1' :pygame.image.load(os.path.join('Assets','wizardBackAtk1.png')),
+                'atk2' :pygame.image.load(os.path.join('Assets','wizardBackAtk2.png'))
+              },'down':{
+                'stand':pygame.image.load(os.path.join('Assets','wizardFrontStand.png')),
+                'walk1':pygame.image.load(os.path.join('Assets','wizardFrontWalk1.png')),
+                'walk2':pygame.image.load(os.path.join('Assets','wizardFrontWalk2.png')),
+                'atk1' :pygame.image.load(os.path.join('Assets','wizardFrontAtk1.png')),
+                'atk2' :pygame.image.load(os.path.join('Assets','wizardFrontAtk2.png'))
+              }
+            },
+            'facing':'down',
+          }
 entities = {}
 sections = [[],[],[]]
 display = None
@@ -11,14 +39,13 @@ def init(disp):
   global sections
   global player
   display = disp
-  player['surface'] = pygame.image.load(os.path.join('Assets','sorcerer.png'))
+  
   rockSurface =  pygame.image.load(os.path.join('Assets','Rock.png'))
   for i in range(3):
     for j in range(3):
       sections[i].append(pygame.image.load(os.path.join('Assets','Field.png')))
 
 def handleResp(data):
-  print "recieved : ",data
   global player
   global entities
   handle = data.partition(' ')
@@ -79,5 +106,5 @@ def boardRender():
   display.blit(sections[2][0],(500-player['x']-640,300-player['y']+640))
   display.blit(sections[2][1],(500-player['x'],300-player['y']+640))
   display.blit(sections[2][2],(500-player['x']+640,300-player['y']+640))
-  display.blit(player['surface'],(484,284))
+  display.blit(player['surfaces'][player['facing']]['stand'],(484,284))
   pygame.display.flip()
