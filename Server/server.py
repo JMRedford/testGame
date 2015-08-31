@@ -14,7 +14,6 @@ def handler(clientsock,addr):
   while 1:
     try:
       data = clientsock.recv(BUFSIZ)
-      print 'caught data',data
       controller.handleInput(data,clientsock,threadName)
     except:
       pass

@@ -25,12 +25,22 @@ finally:
   sock.sendall('np \n')
 
 def startMove(direction):
+  localModel.player['facing'] = direction
+  localModel.player['moving'] = True
   sock.sendall("go "+direction+"\n")
 
 def stopMove(direction):
+  localModel.player['moving'] = False
   sock.sendall("stop "+direction+"\n")
 
+def startShoot():
+  localModel.player['attacking'] = True
+
+def stopShoot():
+  localModel.player['attacking'] = False
+
 commands = {}
+
 lastRender = 0
 
 while(1):
@@ -48,6 +58,8 @@ while(1):
       startMove('left')
     elif (e.key == pygame.K_RIGHT):
       startMove('right')
+    elif (e.key == pygame.K_SPACE):
+      startShoot()
     else:
       if e.key in commands:
         commands[e.key]()
@@ -60,6 +72,8 @@ while(1):
       stopMove('left')
     elif (e.key == pygame.K_RIGHT):
       stopMove('right')
+    elif (e.key == pygame.K_SPACE):
+      stopShoot()
   try:
     data = sock.recv(1024)
     localModel.handleResp(data)

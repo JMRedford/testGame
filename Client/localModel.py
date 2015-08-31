@@ -1,49 +1,103 @@
 import pygame
 import os
 
+BLOCK_SIZE = 32
+WS_WIDTH = 20
+WS_HEIGHT = 20
+WORLD_WS_WIDTH = 15
+WORLD_WS_HEIGHT = 15
+
 player = {'x':0,'y':0,'dx':0,'dy':0,'wx':0,'wy':0,'surfaces':{
               'right':{
                 'stand':pygame.image.load(os.path.join('Assets','wizardRightStand.png')),
-                'walk1':pygame.image.load(os.path.join('Assets','wizardRightWalk1.png')),
-                'walk2':pygame.image.load(os.path.join('Assets','wizardRightWalk2.png')),
+                'move1':pygame.image.load(os.path.join('Assets','wizardRightWalk1.png')),
+                'move2':pygame.image.load(os.path.join('Assets','wizardRightWalk2.png')),
                 'atk1' :pygame.image.load(os.path.join('Assets','wizardRightAtk1.png')),
                 'atk2' :pygame.image.load(os.path.join('Assets','wizardRightAtk2.png'))
               },'left':{
                 'stand':pygame.image.load(os.path.join('Assets','wizardLeftStand.png')),
-                'walk1':pygame.image.load(os.path.join('Assets','wizardLeftWalk1.png')),
-                'walk2':pygame.image.load(os.path.join('Assets','wizardLeftWalk2.png')),
+                'move1':pygame.image.load(os.path.join('Assets','wizardLeftWalk1.png')),
+                'move2':pygame.image.load(os.path.join('Assets','wizardLeftWalk2.png')),
                 'atk1' :pygame.image.load(os.path.join('Assets','wizardLeftAtk1.png')),
                 'atk2' :pygame.image.load(os.path.join('Assets','wizardLeftAtk2.png'))
               },'up':{
                 'stand':pygame.image.load(os.path.join('Assets','wizardBackStand.png')),
-                'walk1':pygame.image.load(os.path.join('Assets','wizardBackWalk1.png')),
-                'walk2':pygame.image.load(os.path.join('Assets','wizardBackWalk2.png')),
+                'move1':pygame.image.load(os.path.join('Assets','wizardBackWalk1.png')),
+                'move2':pygame.image.load(os.path.join('Assets','wizardBackWalk2.png')),
                 'atk1' :pygame.image.load(os.path.join('Assets','wizardBackAtk1.png')),
                 'atk2' :pygame.image.load(os.path.join('Assets','wizardBackAtk2.png'))
               },'down':{
                 'stand':pygame.image.load(os.path.join('Assets','wizardFrontStand.png')),
-                'walk1':pygame.image.load(os.path.join('Assets','wizardFrontWalk1.png')),
-                'walk2':pygame.image.load(os.path.join('Assets','wizardFrontWalk2.png')),
+                'move1':pygame.image.load(os.path.join('Assets','wizardFrontWalk1.png')),
+                'move2':pygame.image.load(os.path.join('Assets','wizardFrontWalk2.png')),
                 'atk1' :pygame.image.load(os.path.join('Assets','wizardFrontAtk1.png')),
                 'atk2' :pygame.image.load(os.path.join('Assets','wizardFrontAtk2.png'))
               }
             },
             'facing':'down',
+            'moving': False,
+            'firstMoveFrame' : True,
+            'attacking' : False,
+            'firstAttackFrame' : True
           }
 entities = {}
-sections = [[],[],[]]
+sections = [[None,None,None],[None,None,None],[None,None,None]]
 display = None
+
+def sectionsLoad(x,y):
+  global sections
+  sections[1][1] = pygame.image.load(os.path.join('Assets','ws'+str(x)+'_'+str(y)+'.png'))
+  if (x > 0):
+    if (y > 0):
+      sections[0][0] = pygame.image.load(os.path.join('Assets','ws'+str(x-1)+'_'+str(y-1)+'.png'))
+    else:
+      sections[0][0] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+
+    sections[1][0] = pygame.image.load(os.path.join('Assets','ws'+str(x-1)+'_'+str(y)+'.png'))
+
+    if (y < WORLD_WS_HEIGHT - 1):
+      sections[2][0] = pygame.image.load(os.path.join('Assets','ws'+str(x-1)+'_'+str(y+1)+'.png'))
+    else:
+      sections[2][0] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+
+  else:
+    sections[0][0] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+    sections[1][0] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+    sections[2][0] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+
+  if (y > 0):
+    sections[0][1] = pygame.image.load(os.path.join('Assets','ws'+str(x)+'_'+str(y-1)+'.png'))
+  else:
+    sections[0][1] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+  if (y < WORLD_WS_HEIGHT - 1):
+    sections[2][1] = pygame.image.load(os.path.join('Assets','ws'+str(x)+'_'+str(y+1)+'.png'))
+  else:
+    sections[2][1] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+
+  if (x < WORLD_WS_WIDTH - 1):
+    if (y > 0):
+      sections[0][2] = pygame.image.load(os.path.join('Assets','ws'+str(x+1)+'_'+str(y-1)+'.png'))
+    else:
+      sections[0][2] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+
+    sections[1][2] = pygame.image.load(os.path.join('Assets','ws'+str(x+1)+'_'+str(y)+'.png'))
+
+    if (y < WORLD_WS_HEIGHT - 1):
+      sections[2][2] = pygame.image.load(os.path.join('Assets','ws'+str(x+1)+'_'+str(y+1)+'.png'))
+    else:
+      sections[2][2] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+
+  else:
+    sections[0][2] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+    sections[1][2] = pygame.image.load(os.path.join('Assets','Ocean.png'))
+    sections[2][2] = pygame.image.load(os.path.join('Assets','Ocean.png'))
 
 def init(disp):
   global display
   global sections
   global player
   display = disp
-  
-  rockSurface =  pygame.image.load(os.path.join('Assets','Rock.png'))
-  for i in range(3):
-    for j in range(3):
-      sections[i].append(pygame.image.load(os.path.join('Assets','Field.png')))
+  sectionsLoad(7,7)
 
 def handleResp(data):
   global player
@@ -54,9 +108,13 @@ def handleResp(data):
   handle = handle[2].partition(' ')
   player['y'] = int(handle[0])
   handle = handle[2].partition(' ')
-  player['wx'] = int(handle[0])
+  newWx = int(handle[0])
   handle = handle[2].partition(' ')
-  player['wy'] = int(handle[0])
+  newWy = int(handle[0])
+  if player['wy'] != newWy or player['wx'] != newWx:
+    sectionsLoad(newWx,newWy)  
+    player['wy'] = newWy
+    player['wx'] = newWx
   # commands:
     # a: id x y wsx wsy type
     # d: id
@@ -98,6 +156,8 @@ def boardRender():
   global sections
   global display
   global player
+  wsx = player['wx']
+  wsy = player['wy']
   display.blit(sections[0][0],(500-player['x']-640,300-player['y']-640))
   display.blit(sections[0][1],(500-player['x'],300-player['y']-640))
   display.blit(sections[0][2],(500-player['x']+640,300-player['y']-640))
@@ -107,5 +167,21 @@ def boardRender():
   display.blit(sections[2][0],(500-player['x']-640,300-player['y']+640))
   display.blit(sections[2][1],(500-player['x'],300-player['y']+640))
   display.blit(sections[2][2],(500-player['x']+640,300-player['y']+640))
-  display.blit(player['surfaces'][player['facing']]['stand'],(484,284))
+  
+  if (player['attacking']):
+    if (player['firstAttackFrame']):
+      display.blit(player['surfaces'][player['facing']]['atk1'],(484,284))
+      player['firstAttackFrame'] = False
+    else:
+      display.blit(player['surfaces'][player['facing']]['atk2'],(484,284))
+      player['firstAttackFrame'] = True
+  elif (player['moving']):
+    if (player['firstMoveFrame']):
+      display.blit(player['surfaces'][player['facing']]['move1'],(484,284))
+      player['firstMoveFrame'] = False
+    else:
+      display.blit(player['surfaces'][player['facing']]['move2'],(484,284))
+      player['firstMoveFrame'] = True
+  else:
+    display.blit(player['surfaces'][player['facing']]['stand'],(484,284))
   pygame.display.flip()
