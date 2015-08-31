@@ -48,6 +48,7 @@ def init(disp):
 def handleResp(data):
   global player
   global entities
+  print 'recieved data : ',data
   handle = data.partition(' ')
   player['x'] = int(handle[0])
   handle = handle[2].partition(' ')

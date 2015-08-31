@@ -1,4 +1,4 @@
-import Model
+import model
 import random
 
 BLOCK_SIZE = 32
@@ -8,29 +8,29 @@ WORLD_WS_WIDTH = 15
 WORLD_WS_HEIGHT = 15
 
 def isPlayer(thread):
-  return Model.isPlayer(thread)
+  return model.isPlayer(thread)
 
 def newPlayer(args):
-  Model.newPlayer(args)
+  model.newPlayer(args)
 
 def movePlayer(args):
-  pass
+  model.players[args[2]].move(args[0])
 
 def stopPlayer(args):
-  pass
+  model.players[args[2]].stop(args[0])
 
 def closeSock(args):
   args[1].close()
 
 def initWorld():
   for x in range(0,WORLD_WS_WIDTH):
-    Model.world.append([])
+    model.world.append([])
     for y in range(0,WORLD_WS_HEIGHT):
-      Model.world[x].append(Model.WorldSection(x,y))
+      model.world[x].append(model.WorldSection(x,y))
       for i in range(0,10):
         xpos = random.randrange(32*19)
         ypos = random.randrange(32*19)
-        Model.Rock(xpos,ypos,Model.world[x][y])
+        model.Rock(xpos,ypos,model.world[x][y])
 
 
 def handleInput(msg,sock,thread):
@@ -38,8 +38,8 @@ def handleInput(msg,sock,thread):
   msgSwitch[command[0]]([command[2],sock,thread])
 
 def sendWorldSection(sock,thread):
-  print "sending world state"
-  player = Model.getPlayer(thread);
+  model.updateModel()
+  player = model.getPlayer(thread);
   sendStr = ''
   sendStr += str(player.get('x')) + ' '
   sendStr += str(player.get('y')) + ' '
@@ -48,7 +48,7 @@ def sendWorldSection(sock,thread):
   try:
     sock.sendall(sendStr)
   except:
-    Model.removePlayer(thread)
+    model.removePlayer(thread)
 
 
 msgSwitch = {'np':newPlayer,'go':movePlayer,'stop':stopPlayer,'close':closeSock}

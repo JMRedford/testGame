@@ -1,10 +1,10 @@
-import Controller
+import controller
 from socket import *
 import threading
 import thread
 import time
 
-Controller.initWorld()
+controller.initWorld()
 
 def handler(clientsock,addr):
   clientsock.sendall("320 320 7 7 \n")
@@ -15,14 +15,15 @@ def handler(clientsock,addr):
     try:
       data = clientsock.recv(BUFSIZ)
       print 'caught data',data
-      Controller.handleInput(data,clientsock,threadName)
+      controller.handleInput(data,clientsock,threadName)
     except:
       pass
-    if not Controller.isPlayer(threadName):
+    if not controller.isPlayer(threadName):
       break
     if (time.time() - threadDat.time > 0.1):
       threadDat.time = time.time()
-      Controller.sendWorldSection(clientsock,threadName)
+
+      controller.sendWorldSection(clientsock,threadName)
 
 if __name__=='__main__':
   HOST = 'localhost'
