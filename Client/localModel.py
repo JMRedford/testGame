@@ -1,5 +1,6 @@
 import pygame
 import os
+from player import *
 
 BLOCK_SIZE = 32
 WS_WIDTH = 20
@@ -7,39 +8,7 @@ WS_HEIGHT = 20
 WORLD_WS_WIDTH = 15
 WORLD_WS_HEIGHT = 15
 
-player = {'x':0,'y':0,'dx':0,'dy':0,'wx':0,'wy':0,'surfaces':{
-              'right':{
-                'stand':pygame.image.load(os.path.join('Assets','wizardRightStand.png')),
-                'move1':pygame.image.load(os.path.join('Assets','wizardRightWalk1.png')),
-                'move2':pygame.image.load(os.path.join('Assets','wizardRightWalk2.png')),
-                'atk1' :pygame.image.load(os.path.join('Assets','wizardRightAtk1.png')),
-                'atk2' :pygame.image.load(os.path.join('Assets','wizardRightAtk2.png'))
-              },'left':{
-                'stand':pygame.image.load(os.path.join('Assets','wizardLeftStand.png')),
-                'move1':pygame.image.load(os.path.join('Assets','wizardLeftWalk1.png')),
-                'move2':pygame.image.load(os.path.join('Assets','wizardLeftWalk2.png')),
-                'atk1' :pygame.image.load(os.path.join('Assets','wizardLeftAtk1.png')),
-                'atk2' :pygame.image.load(os.path.join('Assets','wizardLeftAtk2.png'))
-              },'up':{
-                'stand':pygame.image.load(os.path.join('Assets','wizardBackStand.png')),
-                'move1':pygame.image.load(os.path.join('Assets','wizardBackWalk1.png')),
-                'move2':pygame.image.load(os.path.join('Assets','wizardBackWalk2.png')),
-                'atk1' :pygame.image.load(os.path.join('Assets','wizardBackAtk1.png')),
-                'atk2' :pygame.image.load(os.path.join('Assets','wizardBackAtk2.png'))
-              },'down':{
-                'stand':pygame.image.load(os.path.join('Assets','wizardFrontStand.png')),
-                'move1':pygame.image.load(os.path.join('Assets','wizardFrontWalk1.png')),
-                'move2':pygame.image.load(os.path.join('Assets','wizardFrontWalk2.png')),
-                'atk1' :pygame.image.load(os.path.join('Assets','wizardFrontAtk1.png')),
-                'atk2' :pygame.image.load(os.path.join('Assets','wizardFrontAtk2.png'))
-              }
-            },
-            'facing':'down',
-            'moving': False,
-            'firstMoveFrame' : True,
-            'attacking' : False,
-            'firstAttackFrame' : True
-          }
+
 entities = {}
 sections = [[None,None,None],[None,None,None],[None,None,None]]
 display = None
@@ -173,7 +142,10 @@ def boardRender():
       display.blit(player['surfaces'][player['facing']]['atk1'],(484,284))
       player['firstAttackFrame'] = False
     else:
-      display.blit(player['surfaces'][player['facing']]['atk2'],(484,284))
+      if (player['facing'] == 'left'):
+        display.blit(player['surfaces'][player['facing']]['atk2'],(472,284))
+      else:
+        display.blit(player['surfaces'][player['facing']]['atk2'],(484,284))
       player['firstAttackFrame'] = True
   elif (player['moving']):
     if (player['firstMoveFrame']):
