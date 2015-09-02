@@ -1,1 +1,3 @@
 # testGame
+
+Contributions are welcome
