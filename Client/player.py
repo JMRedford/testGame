@@ -1,4 +1,5 @@
 import pygame
+import os
 
 player = {'x':0,'y':0,'dx':0,'dy':0,'wx':0,'wy':0,'surfaces':{
               'right':{

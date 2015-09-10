@@ -12,13 +12,6 @@ PLAYER_SPEED = 10
 world = []
 players = {}
 
-def newEntityNum(entityNum=0,reclaimedEntityNums=[]):
-  if len(reclaimedEntityNums) > 0:
-    return reclaimedEntityNums.pop()
-  else:
-    entityNum = entityNum + 1
-    return entityNum
-
 def newPlayer(args):
   global players
   print 'making player with key',args[2]

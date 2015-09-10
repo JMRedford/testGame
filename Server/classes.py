@@ -1,3 +1,10 @@
+def newEntityNum(entityNum=0,reclaimedEntityNums=[]):
+  if len(reclaimedEntityNums) > 0:
+    return reclaimedEntityNums.pop()
+  else:
+    entityNum = entityNum + 1
+    return entityNum
+    
 class Entity:
   """ Base class for all game entities """
   def __init__(self,x,y,newId,ws):

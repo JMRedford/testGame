@@ -38,7 +38,7 @@ def handleInput(msg,sock,thread):
   msgSwitch[command[0]]([command[2],sock,thread])
 
 def sendWorldSection(sock,thread):
-  model.updateModel()
+  
   player = model.getPlayer(thread);
   sendStr = ''
   sendStr += str(player.get('x')) + ' '

@@ -3,6 +3,7 @@ from socket import *
 import threading
 import thread
 import time
+import model
 
 controller.initWorld()
 
@@ -21,8 +22,16 @@ def handler(clientsock,addr):
       break
     if (time.time() - threadDat.time > 0.1):
       threadDat.time = time.time()
-
       controller.sendWorldSection(clientsock,threadName)
+
+def updateLoop():
+  threadName = threading.current_thread().name
+  threadDat = threading.local()
+  threadDat.time = time.time()
+  while 1:
+    if (time.time() - threadDat.time > 0.08):
+      threadDat.time = time.time()
+      model.updateModel()
 
 if __name__=='__main__':
   HOST = 'localhost'
@@ -32,6 +41,8 @@ if __name__=='__main__':
   serversock = socket(AF_INET, SOCK_STREAM)
   serversock.bind(ADDR)
   serversock.listen(5)
+
+  thread.start_new_thread(updateLoop)
 
   while 1:
     print 'waiting for connection...'
