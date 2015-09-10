@@ -18,11 +18,12 @@ def handler(clientsock,addr):
       controller.handleInput(data,clientsock,threadName)
     except:
       pass
-    if not controller.isPlayer(threadName):
-      break
     if (time.time() - threadDat.time > 0.1):
       threadDat.time = time.time()
-      controller.sendWorldSection(clientsock,threadName)
+      try:
+        controller.sendWorldSection(clientsock,threadName)
+      except:
+        break;
 
 def updateLoop():
   threadName = threading.current_thread().name
@@ -42,7 +43,7 @@ if __name__=='__main__':
   serversock.bind(ADDR)
   serversock.listen(5)
 
-  thread.start_new_thread(updateLoop)
+  thread.start_new_thread(updateLoop,())
 
   while 1:
     print 'waiting for connection...'

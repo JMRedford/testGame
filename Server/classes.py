@@ -1,10 +1,15 @@
-def newEntityNum(entityNum=0,reclaimedEntityNums=[]):
+entityNum = 0
+reclaimedEntityNums = []
+
+def newEntityNum():
+  global entityNum
+  global reclaimedEntityNums
   if len(reclaimedEntityNums) > 0:
     return reclaimedEntityNums.pop()
   else:
     entityNum = entityNum + 1
     return entityNum
-    
+
 class Entity:
   """ Base class for all game entities """
   def __init__(self,x,y,newId,ws):
@@ -24,8 +29,8 @@ class Entity:
     ws.addEntity(self)
 
 class Player(Entity):
-  def __init__(self,sock):
-    Entity.__init__(self,320,320,newEntityNum(),world[7][7])
+  def __init__(self,sock,ws):
+    Entity.__init__(self,320,320,newEntityNum(),ws)
     self.sock = sock
 
   def move(self, direction):

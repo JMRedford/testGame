@@ -48,6 +48,8 @@ def sendWorldSection(sock,thread):
   try:
     sock.sendall(sendStr)
   except:
+    print ('removing player in thread ',threading.current_thread())
+
     model.removePlayer(thread)
 
 

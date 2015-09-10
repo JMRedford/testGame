@@ -14,8 +14,7 @@ players = {}
 
 def newPlayer(args):
   global players
-  print 'making player with key',args[2]
-  players[args[2]] = Player(args[1])
+  players[args[2]] = Player(args[1],world[7][7])
 
 def getPlayer(thread):
   return players[thread]
