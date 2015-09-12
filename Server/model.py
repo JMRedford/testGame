@@ -1,4 +1,5 @@
 from classes import *
+import random
 
 BLOCK_SIZE = 32
 WS_WIDTH = 20
@@ -11,6 +12,17 @@ PLAYER_SPEED = 10
 
 world = []
 players = {}
+
+def initWorld():
+  global world
+  for x in range(0,WORLD_WS_WIDTH):
+    world.append([])
+    for y in range(0,WORLD_WS_HEIGHT):
+      world[x].append(WorldSection(x,y))
+      for i in range(0,10):
+        xpos = random.randrange(BLOCK_SIZE*WS_WIDTH)
+        ypos = random.randrange(BLOCK_SIZE*WS_HEIGHT)
+        Rock(xpos,ypos,world[x][y])
 
 def newPlayer(args):
   global players

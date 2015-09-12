@@ -32,6 +32,7 @@ class Player(Entity):
   def __init__(self,sock,ws):
     Entity.__init__(self,320,320,newEntityNum(),ws)
     self.sock = sock
+    self.prefix = 'p'
 
   def move(self, direction):
     if direction == 'up\n':
@@ -100,12 +101,13 @@ class Player(Entity):
 class Rock(Entity):
   def __init__(self,x,y,ws):
     Entity.__init__(self,x,y,newEntityNum(),ws)
+    self.prifix = 'r'
 
 class WorldSection:
   """ WorldSection class: to break the world into digestable chunks for the client """
-  entities = dict()
 
   def __init__(self,x,y):
+    self.entities = dict()
     self.x = x
     self.y = y
 

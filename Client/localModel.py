@@ -68,57 +68,97 @@ def init(disp):
   display = disp
   sectionsLoad(7,7)
 
+def changeWorldSection(newX,newY):
+  pass
+
 def handleResp(data):
   global player
   global entities
   print 'recieved data : ',data
   handle = data.partition(' ')
-  player['x'] = int(handle[0])
-  handle = handle[2].partition(' ')
-  player['y'] = int(handle[0])
-  handle = handle[2].partition(' ')
-  newWx = int(handle[0])
-  handle = handle[2].partition(' ')
-  newWy = int(handle[0])
-  if player['wy'] != newWy or player['wx'] != newWx:
-    sectionsLoad(newWx,newWy)  
-    player['wy'] = newWy
-    player['wx'] = newWx
-  # commands:
-    # a: id x y wsx wsy type
-    # d: id
-    # m: id x y
   while len(handle) > 1:
+    prefix = handle[0]
     handle = handle[2].partition(' ')
-    if handle[0] == 'a':
+    # switch on the prefixes
+    if prefix == 's':
+      # self (x,y,wx,wy)
+      player['x'] = handle[0]
       handle = handle[2].partition(' ')
-      iD = int(handle[0])
+      player['y'] = handle[0]
       handle = handle[2].partition(' ')
-      x = int(handle[0])
+      if player['wx'] != handle[0]:
+        changeWorldSection(player['wx'],handle[0])
+        player['wx'] = handle[0]
       handle = handle[2].partition(' ')
-      y = int(handle[0])
+      if player['wy'] != handle[0]:
+        changeWorldSection(handle[0],player['wy'])
+        player['wy'] = handle[0]
       handle = handle[2].partition(' ')
-      wx = int(handle[0])
+    elif prefix == 'r':
+      # rock (id,x,y,wx,wy)
+      entId = handle[0]
+      entities[entId] = { 'rect':pygame.image.load(os.path.join('Assets','rock.png')) }
       handle = handle[2].partition(' ')
-      wy = int(handle[0])
+      entities[entId]['x'] = handle[0]
       handle = handle[2].partition(' ')
-      entType = int(handle[0])
-      entities[iD] = {'x':x, 'y':y, 'wx':wx, 'wy':wy, 'type':entType}
-    elif handle[0] == 'd':
+      entities[entId]['y'] = handle[0]
       handle = handle[2].partition(' ')
-      iD = int(handle[0])
-      del entities[iD]
-    elif handle[0] == 'm':
+      entities[entId]['wx'] = handle[0]
       handle = handle[2].partition(' ')
-      iD = int(handle[0])
+      entities[entId]['wy'] = handle[0]
       handle = handle[2].partition(' ')
-      x = int(handle[0])
+    elif prefix == 'p':
+      # player (id,x,y,wx,wy,dir,anim)
+      entId = handle[0]
       handle = handle[2].partition(' ')
-      y = int(handle[0])
-      entities[iD]['x'] = x
-      entities[iD]['y'] = y
-    else:
-      raise ValueError('Server sent an unknown command : ',handle[0])
+      entities[entId]['x'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['y'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['wx'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['wy'] = handle[0]
+      handle = handle[2].partition(' ')
+      entDir = handle[0]
+      handle = handle[2].partition(' ')
+      entAnim = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['rect'] = player['surfaces'][entDir][entAnim]
+    elif prefix == 'b':
+      # projectile (id,x,y,wx,wy,dx,dy)
+      entId = handle[0]
+      entities[entId] = { 'rect':pygame.image.load(os.path.join('Assets','shotDown1.png')) }
+      handle = handle[2].partition(' ')
+      entities[entId]['x'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['y'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['wx'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['wy'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['dx'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['dy'] = handle[0]
+      handle = handle[2].partition(' ')
+    elif prefix == 'rm':
+      # remove (id)
+      del entities[handle[0]]
+      handle = handle[2].partition(' ')
+    elif prefix == 'm':
+      # move (id,x,y,wx,wy)
+      entId = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['x'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['y'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['wx'] = handle[0]
+      handle = handle[2].partition(' ')
+      entities[entId]['wy'] = handle[0]
+      handle = handle[2].partition(' ')
+    # end switch    
+
 
 def boardRender():
   global sections

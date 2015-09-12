@@ -22,16 +22,6 @@ def stopPlayer(args):
 def closeSock(args):
   args[1].close()
 
-def initWorld():
-  for x in range(0,WORLD_WS_WIDTH):
-    model.world.append([])
-    for y in range(0,WORLD_WS_HEIGHT):
-      model.world[x].append(model.WorldSection(x,y))
-      for i in range(0,10):
-        xpos = random.randrange(32*19)
-        ypos = random.randrange(32*19)
-        model.Rock(xpos,ypos,model.world[x][y])
-
 
 def handleInput(msg,sock,thread):
   command = msg.partition(' ')
@@ -40,16 +30,25 @@ def handleInput(msg,sock,thread):
 def sendWorldSection(sock,thread):
   
   player = model.getPlayer(thread);
-  sendStr = ''
+  sendStr = 's '
   sendStr += str(player.get('x')) + ' '
   sendStr += str(player.get('y')) + ' '
   sendStr += str(player.get('wx')) + ' '
   sendStr += str(player.get('wy')) + ' '
+
+  entDict = model.world[player.get('wx')][player.get('wy')].entities
+  count = 0
+  for entity in entDict:
+    count += 1
+    if entity.dirty:
+      pass
+
+  print count, ' entities'
+  
   try:
     sock.sendall(sendStr)
   except:
     print ('removing player in thread ',threading.current_thread())
-
     model.removePlayer(thread)
 
 
