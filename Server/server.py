@@ -3,7 +3,6 @@ from socket import *
 import threading
 import thread
 import time
-import model
 
 model.initWorld()
 
@@ -18,12 +17,14 @@ def handler(clientsock,addr):
       controller.handleInput(data,clientsock,threadName)
     except:
       pass
-    if (time.time() - threadDat.time > 0.1):
-      threadDat.time = time.time()
-      try:
-        controller.sendWorldSection(clientsock,threadName)
-      except:
-        break;
+    # send info to player
+
+    # if (time.time() - threadDat.time > 0.1):
+    #   threadDat.time = time.time()
+    #   try:
+    #     # send info to player 
+    #   except:
+    #     break;
 
 def updateLoop():
   threadName = threading.current_thread().name
@@ -32,7 +33,7 @@ def updateLoop():
   while 1:
     if (time.time() - threadDat.time > 0.08):
       threadDat.time = time.time()
-      model.updateModel()
+      # do the model update
 
 if __name__=='__main__':
   HOST = 'localhost'

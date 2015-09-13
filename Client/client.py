@@ -4,13 +4,11 @@ import pygame
 import localModel
 import threading
 import time
+from constants import *
 
 pygame.init()
 disp = pygame.display.set_mode([1000,600],pygame.NOFRAME)
 localModel.init(disp)
-
-
-HOST, PORT = "localhost", 9999
 
 # Create a socket (SOCK_STREAM means a TCP socket)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -22,24 +20,7 @@ try:
 except:
   pass
 finally:
-  sock.sendall('np \n')
-
-def startMove(direction):
-  localModel.player['facing'] = direction
-  localModel.player['moving'] = True
-  sock.sendall("go "+direction+"\n")
-
-def stopMove(direction):
-  localModel.player['moving'] = False
-  sock.sendall("stop "+direction+"\n")
-
-def startShoot():
-  localModel.player['attacking'] = True
-
-def stopShoot():
-  localModel.player['attacking'] = False
-
-commands = {}
+  # send initial message(s) to server here
 
 lastRender = 0
 
@@ -51,35 +32,106 @@ while(1):
       sock.close()
       break
     elif (e.key == pygame.K_UP):
-      startMove('up')
+      pass
     elif (e.key == pygame.K_DOWN):
-      startMove('down')
+      pass
     elif (e.key == pygame.K_LEFT):
-      startMove('left')
+      pass
     elif (e.key == pygame.K_RIGHT):
-      startMove('right')
+      pass
     elif (e.key == pygame.K_SPACE):
-      startShoot()
+      pass
     else:
-      if e.key in commands:
-        commands[e.key]()
+      pass
   if (e.type == pygame.KEYUP):
     if (e.key == pygame.K_UP):
-      stopMove('up')
+      pass
     elif (e.key == pygame.K_DOWN):
-      stopMove('down')
+      pass
     elif (e.key == pygame.K_LEFT):
-      stopMove('left')
+      pass
     elif (e.key == pygame.K_RIGHT):
-      stopMove('right')
+      pass
     elif (e.key == pygame.K_SPACE):
-      stopShoot()
+      pass
   try:
     data = sock.recv(1024)
-    localModel.handleResp(data)
+    # call something to handle incoming data
   except:
     pass
   if (time.time() - lastRender > 0.1):
     lastRender = time.time()
-    localModel.boardRender()
+    # localModel.boardRender() render the board
+
+### Stuff from before the refactor for reference ###
   
+# def boardRender():
+#   global sections
+#   global display
+#   global player
+#   wsx = player['wx']
+#   wsy = player['wy']
+#   display.blit(sections[0][0],(500-player['x']-640,300-player['y']-640))
+#   display.blit(sections[0][1],(500-player['x'],300-player['y']-640))
+#   display.blit(sections[0][2],(500-player['x']+640,300-player['y']-640))
+#   display.blit(sections[1][0],(500-player['x']-640,300-player['y']))
+#   display.blit(sections[1][1],(500-player['x'],300-player['y']))
+#   display.blit(sections[1][2],(500-player['x']+640,300-player['y']))
+#   display.blit(sections[2][0],(500-player['x']-640,300-player['y']+640))
+#   display.blit(sections[2][1],(500-player['x'],300-player['y']+640))
+#   display.blit(sections[2][2],(500-player['x']+640,300-player['y']+640))
+  
+#   if (player['attacking']):
+#     if (player['firstAttackFrame']):
+#       display.blit(player['surfaces'][player['facing']]['atk1'],(484,284))
+#       player['firstAttackFrame'] = False
+#     else:
+#       if (player['facing'] == 'left'):
+#         display.blit(player['surfaces'][player['facing']]['atk2'],(472,284))
+#       else:
+#         display.blit(player['surfaces'][player['facing']]['atk2'],(484,284))
+#       player['firstAttackFrame'] = True
+#   elif (player['moving']):
+#     if (player['firstMoveFrame']):
+#       display.blit(player['surfaces'][player['facing']]['move1'],(484,284))
+#       player['firstMoveFrame'] = False
+#     else:
+#       display.blit(player['surfaces'][player['facing']]['move2'],(484,284))
+#       player['firstMoveFrame'] = True
+#   else:
+#     display.blit(player['surfaces'][player['facing']]['stand'],(484,284))
+#   pygame.display.flip()
+
+# player = {'x':0,'y':0,'dx':0,'dy':0,'wx':0,'wy':0,'surfaces':{
+#               'right':{
+#                 'stand':pygame.image.load(os.path.join('Assets','wizardRightStand.png')),
+#                 'move1':pygame.image.load(os.path.join('Assets','wizardRightWalk1.png')),
+#                 'move2':pygame.image.load(os.path.join('Assets','wizardRightWalk2.png')),
+#                 'atk1' :pygame.image.load(os.path.join('Assets','wizardRightAtk1.png')),
+#                 'atk2' :pygame.image.load(os.path.join('Assets','wizardRightAtk2.png'))
+#               },'left':{
+#                 'stand':pygame.image.load(os.path.join('Assets','wizardLeftStand.png')),
+#                 'move1':pygame.image.load(os.path.join('Assets','wizardLeftWalk1.png')),
+#                 'move2':pygame.image.load(os.path.join('Assets','wizardLeftWalk2.png')),
+#                 'atk1' :pygame.image.load(os.path.join('Assets','wizardLeftAtk1.png')),
+#                 'atk2' :pygame.image.load(os.path.join('Assets','wizardLeftAtk2.png'))
+#               },'up':{
+#                 'stand':pygame.image.load(os.path.join('Assets','wizardBackStand.png')),
+#                 'move1':pygame.image.load(os.path.join('Assets','wizardBackWalk1.png')),
+#                 'move2':pygame.image.load(os.path.join('Assets','wizardBackWalk2.png')),
+#                 'atk1' :pygame.image.load(os.path.join('Assets','wizardBackAtk1.png')),
+#                 'atk2' :pygame.image.load(os.path.join('Assets','wizardBackAtk2.png'))
+#               },'down':{
+#                 'stand':pygame.image.load(os.path.join('Assets','wizardFrontStand.png')),
+#                 'move1':pygame.image.load(os.path.join('Assets','wizardFrontWalk1.png')),
+#                 'move2':pygame.image.load(os.path.join('Assets','wizardFrontWalk2.png')),
+#                 'atk1' :pygame.image.load(os.path.join('Assets','wizardFrontAtk1.png')),
+#                 'atk2' :pygame.image.load(os.path.join('Assets','wizardFrontAtk2.png'))
+#               }
+#             },
+#             'facing':'down',
+#             'moving': False,
+#             'firstMoveFrame' : True,
+#             'attacking' : False,
+#             'firstAttackFrame' : True
+#           }
