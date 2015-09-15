@@ -4,7 +4,7 @@ import threading
 import thread
 import time
 
-model.initWorld()
+# model.initWorld()
 
 def handler(clientsock,addr):
   clientsock.sendall("320 320 7 7 \n")
